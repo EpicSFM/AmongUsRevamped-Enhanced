@@ -109,12 +109,6 @@ class OnPlayerJoinedPatch
 [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerLeft))]
 class OnPlayerLeftPatch
 {
-    static void Prefix([HarmonyArgument(0)] ClientData client)
-    {
-        if (client?.Character == null) return;
-        FixedUpdateInGamePatch.ProcessedModerators.Remove(client.Character.PlayerId);
-    }
-
     static void Postfix([HarmonyArgument(0)] ClientData client)
     {
         if (!AmongUsClient.Instance.AmHost || client == null) return;

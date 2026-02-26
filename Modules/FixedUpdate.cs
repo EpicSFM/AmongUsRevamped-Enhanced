@@ -36,17 +36,9 @@ public static class FixedUpdate
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
 class FixedUpdateInGamePatch
 {
-    public static readonly HashSet<byte> ProcessedModerators = new HashSet<byte>();
-
     public static void Postfix(PlayerControl __instance)
     {
         if (__instance == null || __instance.PlayerId == 255 || !AmongUsClient.Instance.AmHost) return;
-        
-        if (Utils.IsPlayerModerator(__instance.Data.FriendCode) && !ProcessedModerators.Contains(__instance.PlayerId))
-        {
-            __instance.SetName($"★{__instance.Data.PlayerName}★");
-            ProcessedModerators.Add(__instance.PlayerId);
-        }
 
         GameObject g = GameObject.Find("GameSettingsLabel");
 

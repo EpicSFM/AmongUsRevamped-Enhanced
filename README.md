@@ -11,7 +11,7 @@
 ## 🔥 What's New in This Enhanced Version?
 This is an **independent modification** of the original AmongUsRevamped, focused on adding advanced **role pre-assignment** features while keeping everything else smooth and compatible.
 
-### ⭐ Brand New: Role Pre-Assignment System (v2.0.0 Enhanced)
+### ⭐ Brand New: Role Pre-Assignment System (v2.0.0)
 Take full control of role distribution before the game starts!
 
 - **/role <Color> <RoleName>** → Pre-assign a specific role to a player by their color (e.g., `/role Red Shapeshifter`).
@@ -26,6 +26,17 @@ Take full control of role distribution before the game starts!
 
 All other original features remain intact and fully functional.
 
+### ⭐ Improved: Moderator System (v2.1.0)
+The moderator system has been overhauled for easier management and clearer behavior.
+
+- **/moderator &lt;Color&gt;** (host only) → Toggle moderator status by player color (e.g. `/moderator Red`). Adds the player as moderator if they aren’t one, or removes them if they already are. Feedback appears **only in your local chat** (e.g. “PlayerName added as moderator” / “PlayerName removed from moderators”).
+- **Same commands as host** → Moderators can use the same chat commands as the host (kick/ban, /help, /lastgame, /0kc, /sns, /speedrun, /roles, etc.), **respecting System settings**: e.g. if “Who can use Color Commands” is set to *Nobody*, only the host can use `/color`; if *Moderators* or *Everyone*, moderators can use it too. “Moderators can use commands” must be enabled for moderator-only commands.
+- **No star in names** → Moderator names are shown normally (no ★Name★).
+- **Kick/ban accountability** → When a moderator kicks or bans someone via command, the host sees in the notifier who did it (e.g. “PlayerName (moderator) kicked TargetName”).
+- **Role pre-assignment** → Moderators can use **/role** and **/unrole** in the lobby; the action is applied with **no chat message**. They can see the current preassignments with **/roles** (the list is sent to them privately). The host still sees the list in chat when using **/roles**.
+
+All moderator list changes are saved to `AUR-DATA/ModeratorList.txt` (one Friend Code per line).
+
 ## 🎮 Full Feature List (Original + Enhancements)
 ### Client-Side Tweaks
 - Game Master mode
@@ -37,7 +48,7 @@ All other original features remain intact and fully functional.
 ### Technical & Moderation Tools
 - Auto-kick/ban low-level players, invalid FriendCodes, "start" spammers...
 - DenyName system
-- Moderator & Banlist systems
+- **Moderator & Banlist systems** (in-game `/moderator <Color>` to add/remove moderators; moderators share host commands and can preassign roles; host sees moderator kick/ban actions)
 - No Game End option
 - Custom countdown
 
@@ -70,10 +81,10 @@ All other original features remain intact and fully functional.
 - **And yes – everything works in public lobbies!** 🎉
 
 ### Hotkeys & Commands
-(Full list from original – plus your new /role, /roles, /unrole commands!)
+(Full list from original – plus /role, /roles, /unrole, and **/moderator &lt;Color&gt;** for moderator management.)
 
 ## 📥 How to Install
-- **With BepInEx already installed**: Drop the `AUR.v2.0.0.dll` (or your renamed .dll) into `Among Us/BepInEx/plugins/`
+- **With BepInEx already installed**: Drop the `AUR.v2.1.0.dll` (or your renamed .dll) into `Among Us/BepInEx/plugins/`
 - **Clean install**: Download the latest .zip from Releases → Extract directly into your Among Us folder
 
 Check the original guide for exact folder locations (Steam, Epic, Itch, etc.).

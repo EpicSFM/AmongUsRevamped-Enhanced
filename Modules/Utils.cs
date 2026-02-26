@@ -49,11 +49,26 @@ public static class Utils
 
     public static bool IsPlayerModerator(string friendCode)
     {
-        if (friendCode == "") return false;
+        return BanManager.IsInModeratorList(friendCode);
+    }
 
-        var friendCodesFilePath = @$"{BanManager.DataPath}/AUR-DATA/ModeratorList.txt";
-        var friendCodes = File.ReadAllLines(friendCodesFilePath);
-        return friendCodes.Any(code => code.Contains(friendCode));
+    /// <summary>True if this player can use /color: host always; others by ColorCommandLevel (0=Moderators, 1=Everyone, 2=Nobody).</summary>
+    public static bool CanUseColorCommand(PlayerControl player)
+    {
+        if (player?.Data == null) return false;
+        if (AmongUsClient.Instance.AmHost && player.Data.ClientId == AmongUsClient.Instance.ClientId) return true;
+        int level = Options.ColorCommandLevel.GetValue();
+        if (level == 2) return false; // Nobody
+        if (level == 1) return true;  // Everyone
+        return level == 0 && IsPlayerModerator(player.Data.FriendCode); // Moderators
+    }
+
+    /// <summary>True if this player can use moderator-only commands (help, lastgame, 0kc, sns, speedrun, roles): host or (moderator + ModeratorCanUseCommand).</summary>
+    public static bool CanUseModeratorCommands(PlayerControl player)
+    {
+        if (player?.Data == null) return false;
+        if (AmongUsClient.Instance.AmHost && player.Data.ClientId == AmongUsClient.Instance.ClientId) return true;
+        return IsPlayerModerator(player.Data.FriendCode) && Options.ModeratorCanUseCommand.GetBool();
     }
 
     public static string GetTabName(TabGroup tab)
@@ -195,7 +210,6 @@ public static class Utils
         Main.GameTimer = 0f;
         MurderPlayerPatch.misfireCount.Clear();
         LateTask.Tasks.Clear();
-        FixedUpdateInGamePatch.ProcessedModerators.Clear();   
         NormalGameEndChecker.ImpCheckComplete = false;
         CreateOptionsPickerPatch.SetDleks2 = false;
         CanCallMeetings = true;

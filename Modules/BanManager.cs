@@ -1,6 +1,8 @@
 using InnerNet;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -164,6 +166,66 @@ public static class BanManager
             return true;
         }
         else return false;
+    }
+
+    /// <summary>Exact match: returns true if friendCode is in ModeratorList.txt (line trim equals).</summary>
+    public static bool IsInModeratorList(string friendCode)
+    {
+        if (string.IsNullOrWhiteSpace(friendCode)) return false;
+        try
+        {
+            if (!File.Exists(ModeratorListPath)) return false;
+            foreach (string line in File.ReadAllLines(ModeratorListPath))
+            {
+                if (line.Trim().Equals(friendCode.Trim(), StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Exception(ex, "IsInModeratorList");
+        }
+        return false;
+    }
+
+    /// <summary>Adds friendCode to ModeratorList.txt if not already present. Returns true if added.</summary>
+    public static bool AddModerator(string friendCode)
+    {
+        if (string.IsNullOrWhiteSpace(friendCode) || !AmongUsClient.Instance.AmHost) return false;
+        try
+        {
+            if (!Directory.Exists($"{DataPath}/AUR-DATA")) Directory.CreateDirectory($"{DataPath}/AUR-DATA");
+            if (!File.Exists(ModeratorListPath)) File.Create(ModeratorListPath).Close();
+            if (IsInModeratorList(friendCode)) return false;
+            File.AppendAllText(ModeratorListPath, friendCode.Trim() + Environment.NewLine);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Exception(ex, "AddModerator");
+            return false;
+        }
+    }
+
+    /// <summary>Removes friendCode from ModeratorList.txt (exact line match). Returns true if removed.</summary>
+    public static bool RemoveModerator(string friendCode)
+    {
+        if (string.IsNullOrWhiteSpace(friendCode) || !AmongUsClient.Instance.AmHost) return false;
+        try
+        {
+            if (!File.Exists(ModeratorListPath)) return false;
+            var lines = File.ReadAllLines(ModeratorListPath).ToList();
+            string trimmed = friendCode.Trim();
+            int removed = lines.RemoveAll(l => l.Trim().Equals(trimmed, StringComparison.OrdinalIgnoreCase));
+            if (removed == 0) return false;
+            File.WriteAllLines(ModeratorListPath, lines);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Exception(ex, "RemoveModerator");
+            return false;
+        }
     }
 
 }
